@@ -14,11 +14,18 @@ struct SignUpView: View {
         VStack {
             TextField("id", text: $viewModel.id)
                 .keyboardType(.asciiCapable)
-                .disableAutocorrection(true)
+                .autocorrectionDisabled()
                 .onChange(of: viewModel.id) { newID in
                     viewModel.validateNewID(newID)
                 }
             Text(viewModel.idValidationResult)
+            SecureField("password", text: $viewModel.password)
+                .keyboardType(.asciiCapable)
+                .autocorrectionDisabled()
+                .onChange(of: viewModel.password) { newPassword in
+                    viewModel.validateNewPassword(newPassword)
+                }
+            Text(viewModel.passwordValidationResult)
         }
         .padding()
     }
