@@ -14,12 +14,16 @@ final class SignUpViewModel: ObservableObject {
     @Published var passwordValidationResult = " "
     
     func validateNewID(_ newID: String) {
-        let validation = Validator.validateID(newID)
+        let trimmedID = newID.trimmingCharacters(in: .whitespacesAndNewlines)
+        let validation = Validator.validateID(trimmedID)
         idValidationResult = validation.description
+        id = trimmedID
     }
     
     func validateNewPassword(_ newPassword: String) {
-        let validation = Validator.validatePassword(newPassword)
+        let trimmedPassword = newPassword.trimmingCharacters(in: .whitespacesAndNewlines)
+        let validation = Validator.validatePassword(trimmedPassword)
         passwordValidationResult = validation.description
+        password = trimmedPassword
     }
 }
