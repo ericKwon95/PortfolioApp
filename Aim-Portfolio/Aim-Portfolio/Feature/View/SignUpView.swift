@@ -14,6 +14,7 @@ struct SignUpView: View {
         VStack {
             TextField("id", text: $viewModel.id)
                 .keyboardType(.asciiCapable)
+                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .onChange(of: viewModel.id) { newID in
                     viewModel.validateNewID(newID)
@@ -21,6 +22,7 @@ struct SignUpView: View {
             Text(viewModel.idValidationResult)
             SecureField("password", text: $viewModel.password)
                 .keyboardType(.asciiCapable)
+                .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .onChange(of: viewModel.password) { newPassword in
                     viewModel.validateNewPassword(newPassword)
