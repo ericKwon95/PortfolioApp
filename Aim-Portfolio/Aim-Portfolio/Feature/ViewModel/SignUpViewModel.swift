@@ -20,6 +20,8 @@ final class SignUpViewModel: ObservableObject {
     @Published var email = ""
     @Published var emailValidationResult = " "
     
+    @Published var isSignedIn = false
+    
     func validateNewID(_ newID: String) {
         let trimmedID = newID.trimmingCharacters(in: .whitespacesAndNewlines)
         let validation = Validator.validateID(trimmedID)
@@ -48,6 +50,26 @@ final class SignUpViewModel: ObservableObject {
         let validation = Validator.validateEmail(trimmedEmail)
         emailValidationResult = validation.description
         email = trimmedEmail
+    }
+    
+    func signUp() {
+        let newUser = User(
+            userID: id,
+            phoneNumber: phoneNumber,
+            email: email
+        )
+        UserDefaults.standard.set(newUser, forKey: "user")
+    }
+    
+    func checkSignInStatus() {
+        if let user = UserDefaults.standard.object(forKey: "user") as? User {
+            isSignedIn = true
+            id = user.userID
+            phoneNumber = user.phoneNumber
+            email = user.email
+        } else {
+            isSignedIn = false
+        }
     }
 }
 
