@@ -17,13 +17,16 @@ enum ValidationResult {
         var description: String {
             switch self {
             case .valid:
-                return "사용할 수 있는 ID 입니다."
+                return "사용할 수 있는 아이디 입니다."
             case .tooShort:
-                return "ID는 7자 이상이어야 합니다."
+                return "아이디는 7자 이상이어야 합니다."
             case .tooLong:
-                return "ID는 20자를 넘을 수 없습니다."
+                return "아이디는 20자를 넘을 수 없습니다."
             case .invalidCharacter:
-                return "ID는 영문자만 포함할 수 있습니다."
+                return "아이디는 영문자만 포함할 수 있습니다."
+            }
+        }
+    }
             }
         }
     }
