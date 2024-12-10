@@ -45,4 +45,18 @@ enum ValidationResult {
             }
         }
     }
+    
+    enum PhoneNumber {
+        case valid
+        case invalid
+        
+        var description: String {
+            switch self {
+            case .valid:
+                return "올바른 번호 형식 입니다."
+            case .invalid:
+                return "잘못된 전화번호 형식 입니다."
+            }
+        }
+    }
 }
