@@ -50,4 +50,12 @@ struct Validator {
         
         return .valid
     }
+    
+    static func validateEmail(_ email: String) -> ValidationResult.Email {
+        let emailRegex = /^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}$/
+        guard email.wholeMatch(of: emailRegex) != nil else {
+            return .invalid
+        }
+        return .valid
+    }
 }

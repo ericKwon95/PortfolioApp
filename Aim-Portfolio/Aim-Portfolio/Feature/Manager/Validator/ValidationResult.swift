@@ -59,4 +59,18 @@ enum ValidationResult {
             }
         }
     }
+    
+    enum Email {
+        case valid
+        case invalid
+        
+        var description: String {
+            switch self {
+            case .valid:
+                return "올바른 이메일 형식 입니다."
+            case .invalid:
+                return "잘못된 이메일 형식 입니다."
+            }
+        }
+    }
 }
