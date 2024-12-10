@@ -28,6 +28,14 @@ struct SignUpView: View {
                     viewModel.validateNewPassword(newPassword)
                 }
             Text(viewModel.passwordValidationResult)
+            TextField("phoneNumber", text: $viewModel.phoneNumber)
+                .keyboardType(.numberPad)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .onChange(of: viewModel.phoneNumber) { newPhoneNumber  in
+                    viewModel.validateNewPhoneNumber(newPhoneNumber)
+                }
+            Text(viewModel.phoneNumberValidationResult)
         }
         .padding()
     }
