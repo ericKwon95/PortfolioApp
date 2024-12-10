@@ -41,7 +41,7 @@ enum ValidationResult {
             case .tooShort:
                 return "비밀번호는 10자 이상이어야 합니다."
             case .tooLong:
-                return "비밀번호는 20자를 넘을 수 없습니다."
+                return "비밀번호가 너무 깁니다."
             case .invalidCharacter:
                 return "비밀번호는 영문, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다."
             }
@@ -72,7 +72,7 @@ struct Validator {
             return .tooShort
         }
         
-        guard password.count <= 20 else {
+        guard password.count <= 100 else {
             return .tooLong
         }
         
