@@ -36,6 +36,14 @@ struct SignUpView: View {
                     viewModel.validateNewPhoneNumber(newPhoneNumber)
                 }
             Text(viewModel.phoneNumberValidationResult)
+            TextField("email", text: $viewModel.email)
+                .keyboardType(.emailAddress)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .onChange(of: viewModel.email) { newEmail in
+                    viewModel.validateNewEmail(newEmail)
+                }
+            Text(viewModel.emailValidationResult)
         }
         .padding()
     }

@@ -17,6 +17,9 @@ final class SignUpViewModel: ObservableObject {
     @Published var phoneNumber = "010-"
     @Published var phoneNumberValidationResult = " "
     
+    @Published var email = ""
+    @Published var emailValidationResult = " "
+    
     func validateNewID(_ newID: String) {
         let trimmedID = newID.trimmingCharacters(in: .whitespacesAndNewlines)
         let validation = Validator.validateID(trimmedID)
@@ -38,6 +41,13 @@ final class SignUpViewModel: ObservableObject {
         phoneNumberValidationResult = validation.description
         let formattedPhoneNumber = makePhoneNumberFormatted(hypenTrimmed)
         phoneNumber = formattedPhoneNumber
+    }
+    
+    func validateNewEmail(_ newEmail: String) {
+        let trimmedEmail = newEmail.trimmingCharacters(in: .whitespacesAndNewlines)
+        let validation = Validator.validateEmail(trimmedEmail)
+        emailValidationResult = validation.description
+        email = trimmedEmail
     }
 }
 
