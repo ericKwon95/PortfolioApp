@@ -17,20 +17,20 @@ enum FocusField {
 struct SignUpView: View {
     @StateObject private var viewModel = SignUpViewModel()
     @FocusState private var focusField: FocusField?
+    @State private var idInterval: CGFloat = 0
+    @State private var passwordInterval: CGFloat = 0
+    @State private var phoneNumberInterval: CGFloat = 0
+    @State private var emailInterval: CGFloat = 0
     
     var body: some View {
         ZStack {
             Color.white
-            
             VStack(spacing: 8) {
                 Spacer()
                 
                 idInputField
-                
                 passwordInputFied
-                
                 phoneNumberInputField
-                
                 emailInputField
                 
                 signUpButton
@@ -58,14 +58,9 @@ struct SignUpView: View {
             placeholder: "아이디를 입력해주세요",
             isSecure: false,
             keyboardType: .asciiCapable,
+            interval: idInterval,
             onSubmit: {
-                if viewModel.passwordValidationResult == .valid {
-                    focusField = .password
-                }
-                let isAllValidated = validateAndmoveFocusToInvalidField()
-                if isAllValidated {
-                    hideKeyboard()
-                }
+                moveToNextFieldIfValid()
             },
             onChange: { newID in
                 viewModel.refineID(newID)
@@ -84,14 +79,9 @@ struct SignUpView: View {
             placeholder: "비밀번호를 입력해주세요",
             isSecure: true,
             keyboardType: .asciiCapable,
+            interval: passwordInterval,
             onSubmit: {
-                if viewModel.passwordValidationResult == .valid {
-                    focusField = .phoneNumber
-                }
-                let isAllValidated = validateAndmoveFocusToInvalidField()
-                if isAllValidated {
-                    hideKeyboard()
-                }
+                moveToNextFieldIfValid()
             },
             onChange: { newPassword in
                 viewModel.refinePassword(newPassword)
@@ -110,14 +100,9 @@ struct SignUpView: View {
             placeholder: "전화번호를 입력해주세요",
             isSecure: false,
             keyboardType: .numbersAndPunctuation,
+            interval: phoneNumberInterval,
             onSubmit: {
-                if viewModel.phoneNumberValidationResult == .valid {
-                    focusField = .email
-                }
-                let isAllValidated = validateAndmoveFocusToInvalidField()
-                if isAllValidated {
-                    hideKeyboard()
-                }
+                moveToNextFieldIfValid()
             },
             onChange: { newPhoneNumber in
                 viewModel.refinePhoneNumber(newPhoneNumber)
@@ -136,11 +121,9 @@ struct SignUpView: View {
             placeholder: "이메일을 입력해주세요",
             isSecure: false,
             keyboardType: .emailAddress,
+            interval: emailInterval,
             onSubmit: {
-                let isAllValidated = validateAndmoveFocusToInvalidField()
-                if isAllValidated {
-                    hideKeyboard()
-                }
+                moveToNextFieldIfValid()
             },
             onChange: { newEmail in
                 viewModel.refineEmail(newEmail)
@@ -151,7 +134,7 @@ struct SignUpView: View {
     
     private var signUpButton: some View {
         Button {
-            let isAllValidated = validateAndmoveFocusToInvalidField()
+            let isAllValidated = validateAndMoveFocusToInvalidField()
             if isAllValidated {
                 viewModel.signUp()
             }
@@ -174,16 +157,70 @@ struct SignUpView: View {
 }
 
 private extension SignUpView {
-    func validateAndmoveFocusToInvalidField() -> Bool {
+    private func moveToNextFieldIfValid() {
+        switch focusField {
+        case .id:
+            if viewModel.validateID(),
+               viewModel.passwordValidationResult == .empty {
+                focusField = .password
+            } else {
+                let isAllValid = validateAndMoveFocusToInvalidField()
+                if isAllValid {
+                    hideKeyboard()
+                }
+            }
+        case .password:
+            if viewModel.validatePassword(),
+               viewModel.phoneNumberValidationResult == .empty{
+                focusField = .phoneNumber
+            } else {
+                let isAllValid = validateAndMoveFocusToInvalidField()
+                if isAllValid {
+                    hideKeyboard()
+                }
+            }
+        case .phoneNumber:
+            if viewModel.validatePhoneNumber(),
+               viewModel.emailValidationResult == .empty {
+                focusField = .email
+            } else {
+                let isAllValid = validateAndMoveFocusToInvalidField()
+                if isAllValid {
+                    hideKeyboard()
+                }
+            }
+        case .email:
+            let isAllValid = validateAndMoveFocusToInvalidField()
+            if isAllValid {
+                hideKeyboard()
+            }
+        case .none:
+            break
+        }
+    }
+    
+    func validateAndMoveFocusToInvalidField() -> Bool {
         let isAllValidate = viewModel.validateAllFields()
         if viewModel.idResultVisible {
             focusField = .id
+            withAnimation(.easeInOut) {
+                idInterval += 1
+            }
         } else if viewModel.passwordResultVisible {
             focusField = .password
+            withAnimation(.easeInOut) {
+                passwordInterval += 1
+            }
         } else if viewModel.phoneNumberResultVisible {
             focusField = .phoneNumber
+            withAnimation(.easeInOut) {
+                phoneNumberInterval += 1
+            }
         } else if viewModel.emailResultVisible {
             focusField = .email
+            withAnimation(.easeInOut) {
+                emailInterval += 1
+            }
         }
         return isAllValidate
     }

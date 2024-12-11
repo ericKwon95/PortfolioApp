@@ -149,9 +149,7 @@ private extension SignUpViewModel {
 
 // MARK: - Validation Logics
 
-private extension SignUpViewModel {
-    
-    
+extension SignUpViewModel {
     func validateID() -> Bool {
         let validation = Validator.validateID(id)
         idValidationResult = validation

@@ -17,6 +17,7 @@ struct InputTextView: View {
     let placeholder: String
     let isSecure: Bool
     let keyboardType: UIKeyboardType
+    let interval: CGFloat
     
     let onSubmit: () -> Void
     let onChange: (String) -> Void
@@ -41,12 +42,14 @@ struct InputTextView: View {
                             onSubmit()
                         }
                     )
+                    .warning(interval)
                 } else{
                     TextField(placeholder, text: $text, axis: .vertical)
                         .keyboardType(keyboardType)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .submitLabel(.next)
+                        .warning(interval)
                         .onChange(of: text) {newValue in
                             guard newValue.contains("\n") else {
                                 onChange(newValue)
@@ -83,5 +86,29 @@ struct InputTextView: View {
             .frame(height: 1)
             .frame(maxWidth: .infinity)
             .foregroundStyle(.appPrimary)
+    }
+}
+
+fileprivate
+extension View {
+    func warning(_ interval: CGFloat) -> some View {
+        self.modifier(WarningEffect(interval))
+            .animation(Animation.default, value: interval)
+    }
+}
+
+fileprivate
+struct WarningEffect: GeometryEffect {
+    
+    var animatableData: CGFloat
+    var amount: CGFloat = 3
+    var shakeCount = 6
+
+    init(_ interval: CGFloat) {
+        self.animatableData = interval
+    }
+    
+    func effectValue(size: CGSize) -> ProjectionTransform {
+        ProjectionTransform(CGAffineTransform(translationX: amount * sin(animatableData * CGFloat(shakeCount) * .pi), y: 0))
     }
 }
