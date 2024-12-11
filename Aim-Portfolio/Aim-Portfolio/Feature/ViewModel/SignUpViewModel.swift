@@ -22,58 +22,73 @@ final class SignUpViewModel: ObservableObject {
     
     @Published var isSignedIn = false
     
-    func validateNewID(_ newID: String) {
-        let trimmedID = newID.trimmingCharacters(in: .whitespacesAndNewlines)
-        let validation = Validator.validateID(trimmedID)
-        idValidationResult = validation.description
-        id = trimmedID
+    // MARK: - Interfaces
+    
+    func refineID(_ newID: String) {
+        let refinedID = refineInputs(newID, count: 20)
+        id = refinedID
     }
     
-    func validateNewPassword(_ newPassword: String) {
-        let trimmedPassword = newPassword.trimmingCharacters(in: .whitespacesAndNewlines)
-        let validation = Validator.validatePassword(trimmedPassword)
-        passwordValidationResult = validation.description
-        password = trimmedPassword
+    func refinePassword(_ newPassword: String) {
+        let refinedPassword = refineInputs(newPassword, count: 100)
+        password = refinedPassword
     }
     
-    func validateNewPhoneNumber(_ newPhoneNumber: String) {
-        let spaceTrimmed = newPhoneNumber.trimmingCharacters(in: .whitespacesAndNewlines)
-        let hypenTrimmed = spaceTrimmed.replacingOccurrences(of: "-", with: "")
-        let validation = Validator.validatePhoneNumber(hypenTrimmed)
-        phoneNumberValidationResult = validation.description
-        let formattedPhoneNumber = makePhoneNumberFormatted(hypenTrimmed)
-        phoneNumber = formattedPhoneNumber
+    func refinePhoneNumber(_ newPhoneNumber: String) {
+        let refinedPhoneNumber = refineInputs(newPhoneNumber, count: 13)
+        let hypenTrimmedPhoneNumber = refinedPhoneNumber.replacingOccurrences(of: "-", with: "")
+        phoneNumber = makePhoneNumberFormatted(hypenTrimmedPhoneNumber)
     }
     
-    func validateNewEmail(_ newEmail: String) {
-        let trimmedEmail = newEmail.trimmingCharacters(in: .whitespacesAndNewlines)
-        let validation = Validator.validateEmail(trimmedEmail)
-        emailValidationResult = validation.description
-        email = trimmedEmail
+    func refineEmail(_ newEmail: String) {
+        let refinedEmail = refineInputs(newEmail, count: 320)
+        email = refinedEmail
     }
     
     func signUp() {
+        guard validateAllFields() else {
+            return
+        }
+        
         let newUser = User(
             userID: id,
             phoneNumber: phoneNumber,
             email: email
         )
-        UserDefaults.standard.set(newUser, forKey: "user")
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(newUser) {
+            UserDefaults.standard.set(encoded, forKey: "user")
+        }
     }
     
     func checkSignInStatus() {
-        if let user = UserDefaults.standard.object(forKey: "user") as? User {
+        guard let savedData = UserDefaults.standard.object(forKey: "user") as? Data else {
+            isSignedIn = false
+            return
+        }
+        
+        let decoder = JSONDecoder()
+        if let savedUser = try? decoder.decode(User.self, from: savedData) {
             isSignedIn = true
-            id = user.userID
-            phoneNumber = user.phoneNumber
-            email = user.email
         } else {
             isSignedIn = false
         }
     }
 }
 
+// MARK: - Refine Input Logics
+
 private extension SignUpViewModel {
+    /// 공백 제거 및 최대 입력 길이 제한
+    func refineInputs(_ input: String, count: Int) -> String {
+        var trimmdInput = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmdInput.count > count {
+            trimmdInput.removeLast(trimmdInput.count - count)
+        }
+        return trimmdInput
+    }
+    
+    /// 01011111111 -> 010-1111-1111
     func makePhoneNumberFormatted(_ phoneNumber: String) -> String {
         var stringWithHypen = phoneNumber
         
@@ -86,5 +101,54 @@ private extension SignUpViewModel {
         }
         
         return stringWithHypen
+    }
+}
+
+// MARK: - Validation Logics
+
+private extension SignUpViewModel {
+    func validateAllFields() -> Bool {
+        guard validateID() else {
+            return false
+        }
+        
+        guard validatePassword() else {
+            return false
+        }
+        
+        guard validatePhoneNumber() else {
+            return false
+        }
+        
+        guard validateEmail() else {
+            return false
+        }
+        
+        return true
+    }
+    
+    func validateID() -> Bool {
+        let validation = Validator.validateID(id)
+        idValidationResult = validation.description
+        return validation == .valid
+    }
+    
+    func validatePassword() -> Bool {
+        let validation = Validator.validatePassword(password)
+        passwordValidationResult = validation.description
+        return validation == .valid
+    }
+
+    func validatePhoneNumber() -> Bool {
+        let hypenTrimmedPhoneNumber = phoneNumber.replacingOccurrences(of: "-", with: "")
+        let validation = Validator.validatePhoneNumber(hypenTrimmedPhoneNumber)
+        phoneNumberValidationResult = validation.description
+        return validation == .valid
+    }
+    
+    func validateEmail() -> Bool {
+        let validation = Validator.validateEmail(email)
+        emailValidationResult = validation.description
+        return validation == .valid
     }
 }

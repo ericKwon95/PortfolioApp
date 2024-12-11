@@ -17,7 +17,7 @@ struct SignUpView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .onChange(of: viewModel.id) { newID in
-                    viewModel.validateNewID(newID)
+                    viewModel.refineID(newID)
                 }
             Text(viewModel.idValidationResult)
             SecureField("password", text: $viewModel.password)
@@ -25,7 +25,7 @@ struct SignUpView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .onChange(of: viewModel.password) { newPassword in
-                    viewModel.validateNewPassword(newPassword)
+                    viewModel.refinePassword(newPassword)
                 }
             Text(viewModel.passwordValidationResult)
             TextField("phoneNumber", text: $viewModel.phoneNumber)
@@ -33,7 +33,7 @@ struct SignUpView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .onChange(of: viewModel.phoneNumber) { newPhoneNumber  in
-                    viewModel.validateNewPhoneNumber(newPhoneNumber)
+                    viewModel.refinePhoneNumber(newPhoneNumber)
                 }
             Text(viewModel.phoneNumberValidationResult)
             TextField("email", text: $viewModel.email)
@@ -41,11 +41,19 @@ struct SignUpView: View {
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .onChange(of: viewModel.email) { newEmail in
-                    viewModel.validateNewEmail(newEmail)
+                    viewModel.refineEmail(newEmail)
                 }
             Text(viewModel.emailValidationResult)
+            Button {
+                viewModel.signUp()
+            } label: {
+                Text("회원가입")
+            }
         }
         .padding()
+        .onAppear {
+            viewModel.checkSignInStatus()
+        }
     }
 }
 
