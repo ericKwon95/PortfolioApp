@@ -8,8 +8,16 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @StateObject var viewModel = SignUpViewModel()
+    enum FocusField {
+        case id
+        case password
+        case phoneNumber
+        case email
+    }
     
+    @StateObject private var viewModel = SignUpViewModel()
+    @FocusState private var focusField: FocusField?
+
     var body: some View {
         VStack(spacing: 8) {
             idInputField
@@ -25,6 +33,10 @@ struct SignUpView: View {
         .padding()
         .onAppear {
             viewModel.checkSignInStatus()
+            focusField = .id
+        }
+        .onTapGesture {
+            hideKeyboard()
         }
     }
     
@@ -41,6 +53,15 @@ struct SignUpView: View {
                     .keyboardType(.asciiCapable)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .focused($focusField, equals: .id)
+                    .onSubmit {
+                        let isAllValidated = validateAndmoveFocusToInvalidField()
+                        if isAllValidated {
+                            hideKeyboard()
+                        } else if viewModel.idValidationResult == .valid {
+                            focusField = .password
+                        }
+                    }
                     .onChange(of: viewModel.id) { newID in
                         viewModel.refineID(newID)
                     }
@@ -67,6 +88,15 @@ struct SignUpView: View {
                     .keyboardType(.asciiCapable)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .focused($focusField, equals: .password)
+                    .onSubmit {
+                        let isAllValidated = validateAndmoveFocusToInvalidField()
+                        if isAllValidated {
+                            hideKeyboard()
+                        } else if viewModel.passwordValidationResult == .valid {
+                            focusField = .phoneNumber
+                        }
+                    }
                     .onChange(of: viewModel.password) { newPassword in
                         viewModel.refinePassword(newPassword)
                     }
@@ -89,9 +119,18 @@ struct SignUpView: View {
             }
             HStack {
                 TextField("전화번호를 입력해주세요", text: $viewModel.phoneNumber)
-                    .keyboardType(.numberPad)
+                    .keyboardType(.numbersAndPunctuation)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .focused($focusField, equals: .phoneNumber)
+                    .onSubmit {
+                        let isAllValidated = validateAndmoveFocusToInvalidField()
+                        if isAllValidated {
+                            hideKeyboard()
+                        } else if viewModel.phoneNumberValidationResult == .valid {
+                            focusField = .email
+                        }
+                    }
                     .onChange(of: viewModel.phoneNumber) { newPhoneNumber  in
                         viewModel.refinePhoneNumber(newPhoneNumber)
                     }
@@ -117,6 +156,13 @@ struct SignUpView: View {
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
+                    .focused($focusField, equals: .email)
+                    .onSubmit {
+                        let isAllValidated = validateAndmoveFocusToInvalidField()
+                        if isAllValidated {
+                            hideKeyboard()
+                        }
+                    }
                     .onChange(of: viewModel.email) { newEmail in
                         viewModel.refineEmail(newEmail)
                     }
@@ -155,7 +201,10 @@ struct SignUpView: View {
     
     private func signUpButton() -> some View {
         Button {
-            viewModel.signUp()
+            let isAllValidated = validateAndmoveFocusToInvalidField()
+            if isAllValidated {
+                viewModel.signUp()
+            }
         } label: {
             HStack {
                 Spacer()
@@ -171,6 +220,28 @@ struct SignUpView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+}
+
+private extension SignUpView {
+    func validateAndmoveFocusToInvalidField() -> Bool {
+        let isAllValidate = viewModel.validateAllFields()
+        if viewModel.idResultVisible {
+            focusField = .id
+        } else if viewModel.passwordResultVisible {
+            focusField = .password
+        } else if viewModel.phoneNumberResultVisible {
+            focusField = .phoneNumber
+        } else if viewModel.emailResultVisible {
+            focusField = .email
+        }
+        return isAllValidate
+    }
+}
+
+extension View {
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to:nil, from:nil, for:nil)
     }
 }
 
