@@ -44,7 +44,8 @@ struct InputTextView: View {
                     )
                     .warning(interval)
                 } else{
-                    TextField(placeholder, text: $text, axis: .vertical)
+                    TextField(placeholder, text: $text, prompt: Text(placeholder).foregroundColor(.gray.opacity(0.7)), axis: .vertical)
+                        .foregroundStyle(.black)
                         .keyboardType(keyboardType)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()

@@ -22,7 +22,6 @@ struct SecureTextFieldRepresentable: UIViewRepresentable {
     
     func makeUIView(context: Context) -> UITextField {
         let textField = UITextField()
-        textField.placeholder = placeholder
         textField.text = text
         textField.isSecureTextEntry = true
         textField.keyboardType = .asciiCapable
@@ -31,6 +30,11 @@ struct SecureTextFieldRepresentable: UIViewRepresentable {
         textField.returnKeyType = .next
         textField.setContentHuggingPriority(.defaultHigh, for: .vertical)
         textField.setContentCompressionResistancePriority(.required, for: .vertical)
+        textField.textColor = .black
+        textField.attributedPlaceholder = NSAttributedString(
+            string: placeholder,
+            attributes: [NSAttributedString.Key.foregroundColor: UIColor(Color.gray).withAlphaComponent(0.7)]
+        )
         
         return textField
     }

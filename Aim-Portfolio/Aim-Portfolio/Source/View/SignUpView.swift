@@ -25,6 +25,7 @@ struct SignUpView: View {
     var body: some View {
         ZStack {
             Color.white
+                .ignoresSafeArea()
             VStack(spacing: 8) {
                 Spacer()
                 
