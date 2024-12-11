@@ -8,19 +8,26 @@
 import Foundation
 
 final class SignUpViewModel: ObservableObject {
+    // MARK: - Properties
+    
     @Published var id = ""
-    @Published var idValidationResult = " "
+    @Published var idValidationResult: ValidationResult.ID = .empty
+    @Published var idResultVisible: Bool = false
     
     @Published var password = ""
-    @Published var passwordValidationResult = " "
+    @Published var passwordValidationResult: ValidationResult.Password = .empty
+    @Published var passwordResultVisible: Bool = false
     
-    @Published var phoneNumber = "010-"
-    @Published var phoneNumberValidationResult = " "
+    @Published var phoneNumber = ""
+    @Published var phoneNumberValidationResult: ValidationResult.PhoneNumber = .empty
+    @Published var phoneNumberResultVisible: Bool = false
     
     @Published var email = ""
-    @Published var emailValidationResult = " "
+    @Published var emailValidationResult: ValidationResult.Email = .empty
+    @Published var emailResultVisible: Bool = false
     
     @Published var isSignedIn = false
+    
     
     // MARK: - Interfaces
     
@@ -68,7 +75,7 @@ final class SignUpViewModel: ObservableObject {
         }
         
         let decoder = JSONDecoder()
-        if let savedUser = try? decoder.decode(User.self, from: savedData) {
+        if let _ = try? decoder.decode(User.self, from: savedData) {
             isSignedIn = true
         } else {
             isSignedIn = false
@@ -109,18 +116,34 @@ private extension SignUpViewModel {
 private extension SignUpViewModel {
     func validateAllFields() -> Bool {
         guard validateID() else {
+            idResultVisible = true
+            passwordResultVisible = false
+            phoneNumberResultVisible = false
+            emailResultVisible = false
             return false
         }
         
         guard validatePassword() else {
+            idResultVisible = false
+            passwordResultVisible = true
+            phoneNumberResultVisible = false
+            emailResultVisible = false
             return false
         }
         
         guard validatePhoneNumber() else {
+            idResultVisible = false
+            passwordResultVisible = false
+            phoneNumberResultVisible = true
+            emailResultVisible = false
             return false
         }
         
         guard validateEmail() else {
+            idResultVisible = false
+            passwordResultVisible = false
+            phoneNumberResultVisible = false
+            emailResultVisible = true
             return false
         }
         
@@ -129,26 +152,26 @@ private extension SignUpViewModel {
     
     func validateID() -> Bool {
         let validation = Validator.validateID(id)
-        idValidationResult = validation.description
+        idValidationResult = validation
         return validation == .valid
     }
     
     func validatePassword() -> Bool {
         let validation = Validator.validatePassword(password)
-        passwordValidationResult = validation.description
+        passwordValidationResult = validation
         return validation == .valid
     }
 
     func validatePhoneNumber() -> Bool {
         let hypenTrimmedPhoneNumber = phoneNumber.replacingOccurrences(of: "-", with: "")
         let validation = Validator.validatePhoneNumber(hypenTrimmedPhoneNumber)
-        phoneNumberValidationResult = validation.description
+        phoneNumberValidationResult = validation
         return validation == .valid
     }
     
     func validateEmail() -> Bool {
         let validation = Validator.validateEmail(email)
-        emailValidationResult = validation.description
+        emailValidationResult = validation
         return validation == .valid
     }
 }
