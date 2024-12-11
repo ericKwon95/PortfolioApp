@@ -5,8 +5,13 @@
 //  Created by 권승용 on 12/10/24.
 //
 
+protocol ValidationResultable: Equatable {
+    var description: String { get }
+    var isValid: Bool { get }
+}
+
 enum ValidationResult {
-    enum ID {
+    enum ID: ValidationResultable {
         case valid
         case tooShort
         case tooLong
@@ -27,9 +32,13 @@ enum ValidationResult {
                 return "아이디가 비어있습니다."
             }
         }
+        
+        var isValid: Bool {
+            return self == .valid
+        }
     }
     
-    enum Password {
+    enum Password: ValidationResultable {
         case valid
         case tooShort
         case tooLong
@@ -50,9 +59,13 @@ enum ValidationResult {
                 return "비밀번호가 비어있습니다."
             }
         }
+        
+        var isValid: Bool {
+            return self == .valid
+        }
     }
     
-    enum PhoneNumber {
+    enum PhoneNumber: ValidationResultable {
         case valid
         case invalid
         case empty
@@ -67,9 +80,13 @@ enum ValidationResult {
                 return "전화번호가 비어있습니다."
             }
         }
+        
+        var isValid: Bool {
+            return self == .valid
+        }
     }
     
-    enum Email {
+    enum Email: ValidationResultable {
         case valid
         case invalid
         case empty
@@ -83,6 +100,10 @@ enum ValidationResult {
             case .empty:
                 return "이메일이 비어있습니다."
             }
+        }
+        
+        var isValid: Bool {
+            return self == .valid
         }
     }
 }
