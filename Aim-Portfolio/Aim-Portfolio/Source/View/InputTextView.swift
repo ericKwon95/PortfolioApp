@@ -31,19 +31,30 @@ struct InputTextView: View {
             }
             HStack {
                 if isSecure {
-                    SecureField(placeholder, text: $text)
-                        .keyboardType(keyboardType)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .onSubmit(onSubmit)
-                        .onChange(of: text, perform: onChange)
+                    SecureTextFieldRepresentable(
+                        placeholder: placeholder,
+                        text: $text,
+                        onChange: { newText in
+                            onChange(newText)
+                        },
+                        onSubmit: {
+                            onSubmit()
+                        }
+                    )
                 } else{
-                    TextField(placeholder, text: $text)
+                    TextField(placeholder, text: $text, axis: .vertical)
                         .keyboardType(keyboardType)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                        .onSubmit(onSubmit)
-                        .onChange(of: text, perform: onChange)
+                        .submitLabel(.next)
+                        .onChange(of: text) {newValue in
+                            guard newValue.contains("\n") else {
+                                onChange(newValue)
+                                return
+                            }
+                            text = newValue.replacing("\n", with: "")
+                            onSubmit()
+                        }
                 }
                 checkMarkImage
                     .opacity(isValid ? 1 : 0)
