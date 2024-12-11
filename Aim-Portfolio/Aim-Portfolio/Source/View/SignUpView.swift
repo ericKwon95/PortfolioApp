@@ -65,6 +65,7 @@ struct SignUpView: View {
             },
             onChange: { newID in
                 viewModel.refineID(newID)
+                _ = viewModel.validateID()
             }
         )
         .focused($focusField, equals: .id)
@@ -86,6 +87,7 @@ struct SignUpView: View {
             },
             onChange: { newPassword in
                 viewModel.refinePassword(newPassword)
+                _ = viewModel.validatePassword()
             }
         )
         .focused($focusField, equals: .password)
@@ -107,6 +109,7 @@ struct SignUpView: View {
             },
             onChange: { newPhoneNumber in
                 viewModel.refinePhoneNumber(newPhoneNumber)
+                _ = viewModel.validatePhoneNumber()
             }
         )
         .focused($focusField, equals: .phoneNumber)
@@ -128,6 +131,7 @@ struct SignUpView: View {
             },
             onChange: { newEmail in
                 viewModel.refineEmail(newEmail)
+                _ = viewModel.validateEmail()
             }
         )
         .focused($focusField, equals: .email)
@@ -161,7 +165,7 @@ private extension SignUpView {
     private func moveToNextFieldIfValid() {
         switch focusField {
         case .id:
-            if viewModel.validateID(),
+            if viewModel.idValidationResult == .valid,
                viewModel.passwordValidationResult == .empty {
                 focusField = .password
             } else {
@@ -171,7 +175,7 @@ private extension SignUpView {
                 }
             }
         case .password:
-            if viewModel.validatePassword(),
+            if viewModel.passwordValidationResult == .valid,
                viewModel.phoneNumberValidationResult == .empty{
                 focusField = .phoneNumber
             } else {
@@ -181,7 +185,7 @@ private extension SignUpView {
                 }
             }
         case .phoneNumber:
-            if viewModel.validatePhoneNumber(),
+            if viewModel.phoneNumberValidationResult == .valid,
                viewModel.emailValidationResult == .empty {
                 focusField = .email
             } else {
