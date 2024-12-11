@@ -9,6 +9,10 @@ import Foundation
 
 struct Validator {
     static func validateID(_ id: String) -> ValidationResult.ID {
+        guard !id.isEmpty else {
+            return .empty
+        }
+        
         guard id.count >= 7 else {
             return .tooShort
         }
@@ -26,6 +30,10 @@ struct Validator {
     }
     
     static func validatePassword(_ password: String) -> ValidationResult.Password {
+        guard !password.isEmpty else {
+            return .empty
+        }
+        
         guard password.count >= 10 else {
             return .tooShort
         }
@@ -43,6 +51,10 @@ struct Validator {
     }
     
     static func validatePhoneNumber(_ phoneNumber: String) -> ValidationResult.PhoneNumber {
+        guard !phoneNumber.isEmpty else {
+            return .empty
+        }
+        
         let phoneNumberRegex = /^010[0-9]{8}$/
         guard phoneNumber.wholeMatch(of: phoneNumberRegex) != nil else {
             return .invalid
@@ -52,10 +64,15 @@ struct Validator {
     }
     
     static func validateEmail(_ email: String) -> ValidationResult.Email {
+        guard !email.isEmpty else {
+            return .empty
+        }
+        
         let emailRegex = /^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,64}$/
         guard email.wholeMatch(of: emailRegex) != nil else {
             return .invalid
         }
+        
         return .valid
     }
 }
