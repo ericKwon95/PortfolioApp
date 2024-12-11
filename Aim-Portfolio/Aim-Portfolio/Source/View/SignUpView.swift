@@ -55,15 +55,16 @@ struct SignUpView: View {
             isValid: viewModel.idValidationResult.isValid,
             isVisible: viewModel.idResultVisible,
             title: "아이디",
-            placeholder: "아이디를 입력해 주세요",
+            placeholder: "아이디를 입력해주세요",
             isSecure: false,
             keyboardType: .asciiCapable,
             onSubmit: {
+                if viewModel.passwordValidationResult == .valid {
+                    focusField = .password
+                }
                 let isAllValidated = validateAndmoveFocusToInvalidField()
                 if isAllValidated {
                     hideKeyboard()
-                } else if viewModel.passwordValidationResult == .valid {
-                    focusField = .password
                 }
             },
             onChange: { newID in
@@ -80,15 +81,16 @@ struct SignUpView: View {
             isValid: viewModel.passwordValidationResult.isValid,
             isVisible: viewModel.passwordResultVisible,
             title: "비밀번호",
-            placeholder: "비밀번호를 입력하세요",
+            placeholder: "비밀번호를 입력해주세요",
             isSecure: true,
             keyboardType: .asciiCapable,
             onSubmit: {
+                if viewModel.passwordValidationResult == .valid {
+                    focusField = .phoneNumber
+                }
                 let isAllValidated = validateAndmoveFocusToInvalidField()
                 if isAllValidated {
                     hideKeyboard()
-                } else if viewModel.passwordValidationResult == .valid {
-                    focusField = .phoneNumber
                 }
             },
             onChange: { newPassword in
@@ -109,11 +111,12 @@ struct SignUpView: View {
             isSecure: false,
             keyboardType: .numbersAndPunctuation,
             onSubmit: {
+                if viewModel.phoneNumberValidationResult == .valid {
+                    focusField = .email
+                }
                 let isAllValidated = validateAndmoveFocusToInvalidField()
                 if isAllValidated {
                     hideKeyboard()
-                } else if viewModel.phoneNumberValidationResult == .valid {
-                    focusField = .email
                 }
             },
             onChange: { newPhoneNumber in
