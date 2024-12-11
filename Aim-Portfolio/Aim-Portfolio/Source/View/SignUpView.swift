@@ -19,21 +19,29 @@ struct SignUpView: View {
     @FocusState private var focusField: FocusField?
 
     var body: some View {
-        VStack(spacing: 8) {
-            idInputField
+        ZStack {
+            Color.white
             
-            passwordInputFied
-            
-            phoneNumberInputField
-            
-            emailInputField
-            
-            signUpButton()
-        }
-        .padding()
-        .onAppear {
-            viewModel.checkSignInStatus()
-            focusField = .id
+            VStack(spacing: 8) {
+                Spacer()
+                
+                idInputField
+                
+                passwordInputFied
+                
+                phoneNumberInputField
+                
+                emailInputField
+                
+                signUpButton()
+                
+                Spacer()
+            }
+            .padding()
+            .onAppear {
+                viewModel.checkSignInStatus()
+                focusField = .id
+            }
         }
         .onTapGesture {
             hideKeyboard()
