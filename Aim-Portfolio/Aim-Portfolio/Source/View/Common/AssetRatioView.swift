@@ -27,26 +27,25 @@ struct AssetRatioView: View {
                 Spacer()
             }
             ForEach(Array(zip(assets.indices, assets)), id: \.0) { index, asset in
-                assetInfo(asset, color: baseColor, brightness: Double(index) * -0.1)
+                assetInfo(asset, color: baseColor.adjustBrightness(Double(index) * -0.1))
             }
         }
     }
     
-    private func assetInfo(_ asset: AssetItem, color: Color, brightness: Double) -> some View {
+    private func assetInfo(_ asset: AssetItem, color: Color) -> some View {
         HStack(spacing: 0) {
             Text(asset.name)
                 .font(.system(size: 15, weight: .regular))
                 .foregroundStyle(.white)
                 .frame(width: 100, alignment: .leading)
                 .padding(.trailing, 16)
-            RatioBar(ratio: asset.ratio, color: color, brightness: brightness)
+            RatioBar(ratio: asset.ratio, color: color)
             Spacer()
             Text("\(String(format: "%.2f", asset.ratio))%")
                 .font(.system(size: 14, weight: .regular))
                 .frame(width: 70, alignment: .trailing)
                 .foregroundStyle(color)
                 .monospacedDigit()
-                .brightness(brightness)
         }
     }
 }

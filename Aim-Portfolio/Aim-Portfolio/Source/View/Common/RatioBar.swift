@@ -10,7 +10,6 @@ import SwiftUI
 struct RatioBar: View {
     let ratio: Double
     let color: Color
-    let brightness: Double
     
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
@@ -23,7 +22,6 @@ struct RatioBar: View {
                         RoundedRectangle(cornerRadius: 20)
                             .foregroundStyle(color)
                             .frame(width: proxy.size.width * (ratio / 100), height: 6)
-                            .brightness(brightness)
                         Spacer()
                     }
                 }
@@ -32,5 +30,5 @@ struct RatioBar: View {
 }
 
 #Preview {
-    RatioBar(ratio: 50, color: .red, brightness: 0)
+    RatioBar(ratio: 50, color: .red)
 }
