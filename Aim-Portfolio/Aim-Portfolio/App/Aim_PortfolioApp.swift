@@ -11,7 +11,7 @@ import SwiftUI
 struct Aim_PortfolioApp: App {
     var body: some Scene {
         WindowGroup {
-            SignUpView()
+            MainView()
         }
     }
 }
