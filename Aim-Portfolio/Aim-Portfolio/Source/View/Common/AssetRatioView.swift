@@ -37,15 +37,19 @@ struct AssetRatioView: View {
             Text(asset.name)
                 .font(.system(size: 15, weight: .regular))
                 .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
                 .frame(width: 100, alignment: .leading)
                 .padding(.trailing, 16)
             RatioBar(ratio: asset.ratio, color: color)
             Spacer()
             Text("\(String(format: "%.2f", asset.ratio))%")
                 .font(.system(size: 14, weight: .regular))
-                .frame(width: 70, alignment: .trailing)
                 .foregroundStyle(color)
                 .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .frame(width: 70, alignment: .trailing)
         }
     }
 }
