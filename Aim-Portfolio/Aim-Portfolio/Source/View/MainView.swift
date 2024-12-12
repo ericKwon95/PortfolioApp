@@ -16,6 +16,12 @@ struct MainView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 32) {
+                DonutChart(
+                    stocks: viewModel.stocks,
+                    bonds: viewModel.bonds,
+                    etc: viewModel.etc
+                )
+                
                 AssetRatioView(
                     type: .stock,
                     assets: viewModel.stocks,
