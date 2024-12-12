@@ -16,11 +16,15 @@ struct MainView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 32) {
-                DonutChart(
-                    stocks: viewModel.stocks,
-                    bonds: viewModel.bonds,
-                    etc: viewModel.etc
-                )
+                HStack(spacing: 16) {
+                    DonutChart(
+                        stocks: viewModel.stocks,
+                        bonds: viewModel.bonds,
+                        etc: viewModel.etc
+                    )
+                    portfolioDescription
+                }
+                .frame(height: 140)
                 
                 AssetRatioView(
                     type: .stock,
@@ -45,6 +49,28 @@ struct MainView: View {
         .onAppear {
             viewModel.loadAssetItems()
         }
+    }
+    
+    private var portfolioDescription: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("장기투자에 적합한 적극적인 자산배분")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.leading)
+            Spacer()
+            HStack(spacing: 0) {
+                Text("\'평생안정 은퇴자금\'")
+                    .foregroundStyle(.white)
+                    .bold()
+                Text("에")
+                    .font(.system(size: 15))
+                    .foregroundStyle(.assetTypeTitle)
+            }
+            Text("최적화된 자산배분입니다.")
+                .font(.system(size: 15))
+                .foregroundStyle(.assetTypeTitle)
+        }
+        .padding()
     }
 }
 
