@@ -1,0 +1,66 @@
+[
+    {
+        "security_symbol": "VT",
+        "type": "stock",
+        "security_description": "글로벌 전체 주식 시장을 추적하는 밸런스드 ETF",
+        "quantity": 50,
+        "ratio": 15.75,
+        "security_name": "글로벌 주식 ETF"
+    },
+    {
+        "security_symbol": "VXUS",
+        "type": "stock",
+        "security_description": "미국 외 선진국 및 신흥국 주식 포트폴리오",
+        "quantity": 40,
+        "ratio": 12.35,
+        "security_name": "국제 주식 ETF"
+    },
+    {
+        "security_symbol": "QQQ",
+        "type": "stock",
+        "security_description": "나스닥 100대 기술 혁신 기업 ETF",
+        "quantity": 30,
+        "ratio": 9.85,
+        "security_name": "기술주 ETF"
+    },
+    {
+        "security_symbol": "SCHD",
+        "type": "stock",
+        "security_description": "배당 성장주 중심의 안정적인 미국 기업 ETF",
+        "quantity": 35,
+        "ratio": 8.65,
+        "security_name": "배당 성장주 ETF"
+    },
+    {
+        "security_symbol": "AGG",
+        "type": "bond",
+        "security_description": "미국 투자등급 채권 전체 시장 ETF",
+        "quantity": 25,
+        "ratio": 13.42,
+        "security_name": "미국 채권 ETF"
+    },
+    {
+        "security_symbol": "BNDX",
+        "type": "bond",
+        "security_description": "글로벌 비미국 투자등급 채권 ETF",
+        "quantity": 20,
+        "ratio": 11.25,
+        "security_name": "글로벌 채권 ETF"
+    },
+    {
+        "security_symbol": "TIPS",
+        "type": "bond",
+        "security_description": "미국 물가연동 국채 ETF",
+        "quantity": 15,
+        "ratio": 9.50,
+        "security_name": "국채 물가 ETF"
+    },
+    {
+        "security_symbol": "USD_CASH",
+        "type": "etc",
+        "quantity": 1,
+        "security_name": "유동성 현금",
+        "ratio": 19.23,
+        "security_description": "비상시 대비 및 투자 기회 대기 자금"
+    }
+]

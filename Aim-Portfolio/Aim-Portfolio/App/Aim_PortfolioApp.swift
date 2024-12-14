@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct Aim_PortfolioApp: App {
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashView()
         }
     }
 }
