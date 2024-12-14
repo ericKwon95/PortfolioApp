@@ -13,7 +13,11 @@ final class PortfolioViewModel: ObservableObject {
     @Published var bonds: [AssetItem] = []
     @Published var etc: [AssetItem] = []
     
-    func loadAssetItems() {
+    init() {
+        loadAssetItems()
+    }
+    
+    private func loadAssetItems() {
         guard let data = try? JSONLoader.loadJSON(from: "testFile") as [AssetDTO] else {
             print("Error loading JSON")
             return
