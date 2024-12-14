@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AllStocksView: View {
+    @EnvironmentObject private var coordinator: Coordinator<Destination>
     @ObservedObject var viewModel: PortfolioViewModel
     @State private var scrollOffset: CGFloat = 0
     
@@ -20,45 +21,25 @@ struct AllStocksView: View {
                 Color.allStockBackground
                     .ignoresSafeArea()
             }
-            
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 8) {
-                    title
-                    ForEach(viewModel.stocks) { stock in
-                        StockRow(
-                            ticker: stock.symbol,
-                            name: stock.name,
-                            description: stock.description,
-                            quantity: stock.quantity
-                        )
-                    }
-                    ForEach(viewModel.bonds) { bond in
-                        StockRow(
-                            ticker: bond.symbol,
-                            name: bond.name,
-                            description: bond.description,
-                            quantity: bond.quantity
-                        )
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 32)
-                .background {
-                    GeometryReader {
-                        Color.clear.preference(
-                            key: ViewOffsetKey.self,
-                            value: -$0.frame(in: .named("scroll")).origin.y
-                        )
-                    }
-                }
-                .onPreferenceChange(ViewOffsetKey.self) {
-                    scrollOffset = $0
-                }
-            }
-            .coordinateSpace(name: "scroll")
+            stockList
+            navigationBar
         }
-        .onAppear {
-            viewModel.loadAssetItems()
+        .toolbar(.hidden)
+    }
+    
+    private var navigationBar: some View {
+        VStack(spacing: 0) {
+            HStack{
+                backButton
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
+                Spacer()
+            }
+            .background {
+                Color.appPrimary.ignoresSafeArea()
+            }
+            
+            Spacer()
         }
     }
     
@@ -79,6 +60,57 @@ struct AllStocksView: View {
         }
         .padding(.leading, 16)
     }
+    
+    private var backButton: some View {
+        Image(systemName: "arrow.left")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 22, height: 22)
+            .foregroundStyle(.white)
+            .contentShape(Rectangle().size(width: 44, height: 44))
+            .onTapGesture {
+                coordinator.pop()
+            }
+    }
+    
+    private var stockList: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 8) {
+                title
+                ForEach(viewModel.stocks) { stock in
+                    StockRow(
+                        ticker: stock.symbol,
+                        name: stock.name,
+                        description: stock.description,
+                        quantity: stock.quantity
+                    )
+                }
+                ForEach(viewModel.bonds) { bond in
+                    StockRow(
+                        ticker: bond.symbol,
+                        name: bond.name,
+                        description: bond.description,
+                        quantity: bond.quantity
+                    )
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 32)
+            .padding(.bottom, 32)
+            .background {
+                GeometryReader {
+                    Color.clear.preference(
+                        key: ViewOffsetKey.self,
+                        value: -$0.frame(in: .named("scroll")).origin.y
+                    )
+                }
+            }
+            .onPreferenceChange(ViewOffsetKey.self) {
+                scrollOffset = $0
+            }
+        }
+        .coordinateSpace(name: "scroll")
+    }
 }
 
 struct ViewOffsetKey: PreferenceKey {
@@ -91,4 +123,5 @@ struct ViewOffsetKey: PreferenceKey {
 
 #Preview {
     AllStocksView(viewModel: PortfolioViewModel())
+        .environmentObject(Coordinator<Destination>())
 }

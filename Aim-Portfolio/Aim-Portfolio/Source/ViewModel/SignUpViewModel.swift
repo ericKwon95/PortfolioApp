@@ -51,16 +51,15 @@ final class SignUpViewModel: ObservableObject {
         email = refinedEmail
     }
     
-    func signUp() {
+    func signUp() throws {
         let newUser = User(
             userID: id,
             phoneNumber: phoneNumber,
             email: email
         )
         let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(newUser) {
-            UserDefaults.standard.set(encoded, forKey: "user")
-        }
+        let encoded = try encoder.encode(newUser)
+        UserDefaults.standard.set(encoded, forKey: "user")
     }
     
     func checkSignInStatus() {
@@ -68,7 +67,6 @@ final class SignUpViewModel: ObservableObject {
             isSignedIn = false
             return
         }
-        
         let decoder = JSONDecoder()
         if let _ = try? decoder.decode(User.self, from: savedData) {
             isSignedIn = true
@@ -161,7 +159,7 @@ extension SignUpViewModel {
         passwordValidationResult = validation
         return validation == .valid
     }
-
+    
     func validatePhoneNumber() -> Bool {
         let hypenTrimmedPhoneNumber = phoneNumber.replacingOccurrences(of: "-", with: "")
         let validation = Validator.validatePhoneNumber(hypenTrimmedPhoneNumber)

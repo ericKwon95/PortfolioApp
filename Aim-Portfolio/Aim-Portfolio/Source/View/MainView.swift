@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @EnvironmentObject private var coordinator: Coordinator<Destination>
     @StateObject private var viewModel = PortfolioViewModel()
     
     var body: some View {
@@ -16,16 +17,9 @@ struct MainView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 32) {
-                HStack(spacing: 16) {
-                    DonutChart(
-                        stocks: viewModel.stocks,
-                        bonds: viewModel.bonds,
-                        etc: viewModel.etc
-                    )
-                    portfolioDescription
-                }
+                title
+                chartAndDescription
                 .frame(height: 140)
-                
                 AssetRatioView(
                     type: .stock,
                     assets: viewModel.stocks,
@@ -43,11 +37,31 @@ struct MainView: View {
                     assets: viewModel.etc,
                     baseColor: .etc
                 )
+                Spacer()
             }
             .padding()
         }
-        .onAppear {
-            viewModel.loadAssetItems()
+        .toolbar(.hidden)
+    }
+    
+    private var title: some View {
+        Text("자산 배분")
+            .font(.system(size: 24, weight: .bold))
+            .foregroundStyle(.white)
+            .padding(.bottom, 32)
+    }
+    
+    private var chartAndDescription: some View {
+        HStack(spacing: 16) {
+            DonutChart(
+                stocks: viewModel.stocks,
+                bonds: viewModel.bonds,
+                etc: viewModel.etc
+            )
+            .onTapGesture {
+                coordinator.push(.allStocks(viewModel))
+            }
+            portfolioDescription
         }
     }
     
@@ -76,4 +90,5 @@ struct MainView: View {
 
 #Preview {
     MainView()
+        .environmentObject(Coordinator<Destination>())
 }

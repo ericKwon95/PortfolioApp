@@ -15,6 +15,7 @@ enum FocusField {
 }
 
 struct SignUpView: View {
+    @EnvironmentObject private var coordinator: Coordinator<Destination>
     @StateObject private var viewModel = SignUpViewModel()
     @FocusState private var focusField: FocusField?
     @State private var idInterval: CGFloat = 0
@@ -44,6 +45,7 @@ struct SignUpView: View {
                 focusField = .id
             }
         }
+        .toolbar(.hidden)
         .onTapGesture {
             hideKeyboard()
         }
@@ -139,10 +141,7 @@ struct SignUpView: View {
     
     private var signUpButton: some View {
         Button {
-            let isAllValidated = validateAndMoveFocusToInvalidField()
-            if isAllValidated {
-                viewModel.signUp()
-            }
+            validateAndSignUp()
         } label: {
             HStack {
                 Spacer()
@@ -158,6 +157,16 @@ struct SignUpView: View {
             }
         }
         .buttonStyle(.plain)
+    }
+    
+    private func validateAndSignUp() {
+        guard validateAndMoveFocusToInvalidField() else { return }
+        do {
+            try viewModel.signUp()
+            coordinator.push(.main)
+        } catch {
+            print(error)
+        }
     }
 }
 
@@ -233,4 +242,5 @@ private extension SignUpView {
 
 #Preview {
     SignUpView()
+        .environmentObject(Coordinator<Destination>())
 }
